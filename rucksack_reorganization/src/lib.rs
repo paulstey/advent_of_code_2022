@@ -2,8 +2,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-pub mod priority;
 pub mod group;
+pub mod priority;
 
 pub fn read_lines_from_file<P>(filename: P) -> Vec<String>
 where

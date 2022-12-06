@@ -14,13 +14,15 @@ pub struct Group {
 
 impl Group {
     pub fn new(rucksack1: &String, rucksack2: &String, rucksack3: &String) -> Self {
-        let rucksack_1and2_shared = rucksack1
+        let rucksack_1and2_shared: Vec<char> = rucksack1
             .chars()
-            .filter(|&item| rucksack2.contains(item));
+            .filter(|&item| rucksack2.contains(item))
+            .collect();
 
         let shared_item = rucksack3
             .chars()
-            .filter(|&item| rucksack_1and2_shared.contains(item));
+            .find(|&item| rucksack_1and2_shared.contains(&item))
+            .unwrap_or('?');
 
         Self {
             rucksack1: rucksack1.to_string(),
