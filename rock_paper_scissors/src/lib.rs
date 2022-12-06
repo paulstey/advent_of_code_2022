@@ -3,6 +3,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
+pub mod round;
+
 pub fn read_lines_from_file<P>(filename: P) -> Vec<String>
 where
     P: AsRef<Path>,
@@ -13,4 +15,3 @@ where
         .map(|l| l.expect("Could not parse line"))
         .collect()
 }
-
