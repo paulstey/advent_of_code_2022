@@ -1,13 +1,13 @@
 // src/directory.rs
 
-use std::{cell::RefCell, collections::HashMap, rc::Rc};
+use std::{cell::RefCell, rc::Rc};
 
 #[derive(Debug, Clone)]
 pub struct Directory<'a> {
-    label: &'a str,
-    dirs: Vec<DirectoryRef<'a>>,
-    files: Vec<File<'a>>,
-    size: u32,
+    pub label: &'a str,
+    pub dirs: Vec<DirectoryRef<'a>>,
+    pub files: Vec<File<'a>>,
+    pub size: u32,
 }
 
 /// A type alias for a Directory wrapped in an Rc, which allows for the Directory to have
@@ -32,7 +32,7 @@ impl<'a> Directory<'a> {
 
     /// Search the contents of a file system object and return the child object
     /// indicated by `label`.
-    fn get_child(&self, label: &str) -> Option<DirectoryRef<'a>> {
+    pub fn get_child(&self, label: &str) -> Option<DirectoryRef<'a>> {
         self.dirs
             .iter()
             .find(|c| c.borrow().label == label)
@@ -40,7 +40,7 @@ impl<'a> Directory<'a> {
     }
 
     /// Add a nested directory to this directory
-    fn add_directory(&mut self, dir: Directory<'a>) {
+    pub fn add_directory(&mut self, dir: Directory<'a>) {
         let dir_ref = Rc::new(RefCell::new(dir));
         self.dirs.push(dir_ref);
     }
@@ -48,8 +48,8 @@ impl<'a> Directory<'a> {
 
 #[derive(Debug, Clone)]
 pub struct File<'a> {
-    name: &'a str,
-    size: u32,
+    pub label: &'a str,
+    pub size: u32,
 }
 
 /// Enum to allow both types of items to be stored in a single vector. Both types
@@ -68,4 +68,3 @@ pub enum Cmd<'a> {
     MoveRoot,
     List(Vec<FileSystemObj<'a>>),
 }
-

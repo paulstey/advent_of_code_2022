@@ -4,16 +4,15 @@ use nom::{
     branch,
     bytes::complete,
     character::complete::{alpha1, space1, u32},
-    combinator::map,
-    multi::separated_list1,
-    sequence, Finish, IResult,
+    combinator, multi, sequence, Finish, IResult,
 };
+use std::{cell::RefCell, rc::Rc};
 
-use no_space_left_on_device::directory::{self, Cmd, Directory, DirectoryRef, File, FileSystemObj};
+use crate::directory::{Cmd, Directory, DirectoryRef, File, FileSystemObj};
 
 /// Nom parser for "dir bacon" -> Rc<RefCell<Directory { label: "bacon" }>>
 fn dir(s: &str) -> IResult<&str, DirectoryRef> {
-    let (s, label) = sequence::preceded(tag("dir "), alpha1)(s)?;
+    let (s, label) = sequence::preceded(complete::tag("dir "), alpha1)(s)?;
     let dir = Directory::from(label);
     Ok((s, Rc::new(RefCell::new(dir))))
 }
@@ -35,7 +34,7 @@ fn fs_obj(s: &str) -> IResult<&str, FileSystemObj> {
 
 /// Nom parser for a list of newline separated results from an `ls` command
 fn contents(s: &str) -> IResult<&str, Vec<FileSystemObj>> {
-    multi::separated_list1(tag("\n"), fs_obj)(s)
+    multi::separated_list1(complete::tag("\n"), fs_obj)(s)
 }
 
 /// Nom parser for the various `cd` commands

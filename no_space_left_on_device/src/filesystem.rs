@@ -1,12 +1,12 @@
 // src/filesystem.rs
+use crate::directory::{Cmd, Directory, DirectoryRef, FileSystemObj};
+use anyhow::{anyhow, Error, Result};
+use std::{cell::RefCell, rc::Rc};
 
-use no_space_left_on_device::directory::{Directory, DirectoryRef, File, Cmd, FileSystemObj};
-
-
-/// Represents the entire filesystem, which is a linked tree of all the filesystem
-/// objects. Contains the root node.
+// Represents the entire filesystem, which is a linked tree of all the filesystem
+// objects. Contains the root node.
 #[derive(Debug, Clone)]
-pub struct FileSystem<'a>(pub DirRef<'a>);
+pub struct FileSystem<'a>(pub DirectoryRef<'a>);
 
 impl<'a> TryFrom<Vec<Cmd<'a>>> for FileSystem<'a> {
     type Error = Error;
@@ -59,9 +59,9 @@ impl<'a> TryFrom<Vec<Cmd<'a>>> for FileSystem<'a> {
 }
 
 impl FileSystem<'_> {
-    /// Fill in the sizes of all the directories in the file system by recursively
-    /// walking the file system.
-    fn calculate_directory_sizes(&self) {
+    // Fill in the sizes of all the directories in the file system by recursively
+    // walking the file system.
+    pub fn calculate_directory_sizes(&self) {
         // Recursively walk the file system tree and fill in the sizes for
         // each directory.
         fn size(dir: DirectoryRef) -> u32 {
@@ -86,5 +86,25 @@ impl FileSystem<'_> {
 
         // Perform the walk
         size(self.0.clone());
+    }
+
+    pub fn get_directory_sizes(&self) -> Vec<u32> {
+        let mut sizes = Vec::new();
+
+        // Walk the file system tree structure, adding directory sizes to `sizes`
+        fn walk(dir: DirectoryRef, sizes: &mut Vec<u32>) {
+            sizes.push(dir.borrow().size);
+            for item in dir.borrow().dirs.iter() {
+                walk(item.clone(), sizes);
+            }
+        }
+
+        // Do the walk!
+        walk(self.0.clone(), &mut sizes);
+        sizes
+    }
+
+    pub fn total_size(&self) -> u32 {
+        self.0.borrow().size
     }
 }

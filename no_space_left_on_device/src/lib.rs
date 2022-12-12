@@ -3,7 +3,8 @@ use std::io::{BufRead, BufReader};
 use std::path::Path;
 
 pub mod directory;
-
+pub mod filesystem;
+pub mod parser;
 
 pub fn read_lines_from_file<P>(filename: P) -> Vec<String>
 where

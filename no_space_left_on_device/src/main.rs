@@ -1,28 +1,33 @@
+/// NOTE: This solution is largely a copy of ericwburden's solution, which can be
+/// found here: `https://github.com/ericwburden/advent_of_code_2022`
+
 use no_space_left_on_device;
-use no_space_left_on_device::directory::{self, Directory};
+use no_space_left_on_device::filesystem::FileSystem;
+use no_space_left_on_device::parser;
+use std::fs;
 use time::Instant;
 
 fn main() {
     let t1 = Instant::now();
-    let lines_string_vec = no_space_left_on_device::read_lines_from_file("data/test_data.txt");
+    let input = fs::read_to_string("data/data.txt").expect("Could not read from file");
 
-    let mut directory_tree = Directory::new("/".to_string(), None);
-    let mut current_parent = directory_tree.clone();
+    let commands = parser::commands(&input).expect("Could not parse input!");
 
-    let i = 1;
-    while i < lines_string_vec.len() {
-        if lines_string_vec[i].contains("$ ls".to_string()) {
-            let num_items_in_dir = directory::count_items_in_dir(i, &lines_string_vec);
+    let fs = FileSystem::try_from(commands).expect("Could not build filesystem!");
+    fs.calculate_directory_sizes();
 
-            for j in 1..=num_items_in_dir {
-                if lines_string_vec[i + j].contains("dir ".to_string()) {
-                    let name = lines_string_vec[i + j].remove("dir ").trim();
-                    let dir = Directory::new(name, current_parent); 
-                    
-                }
-            }
-        }
-    }
+    // Calculate the space we need to free up as described by the puzzle
+    let space_remaining = 70_000_000 - fs.total_size();
+    let space_needed = 30_000_000 - space_remaining;
+
+    let solution: u32 = fs
+        .get_directory_sizes()
+        .into_iter()
+        .filter(|x| *x >= space_needed)
+        .min()
+        .unwrap()
+        .into();
+
     println!("{:?}", Instant::now() - t1);
-    println!("{:?}", directory);
+    println!("{:?}", solution);
 }
