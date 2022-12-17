@@ -14,7 +14,7 @@ where
         .collect()
 }
 
-pub fn string_vec_to_i32_vec(lines_string_vec: &[String]) -> Result<Vec<i32>> {
+pub fn string_vec_to_i32_vec(lines_string_vec: &Vec<String>) -> Result<Vec<i32>> {
     let lines_i32_vec: Vec<i32> = lines_string_vec
         .iter()
         .map(|line| match line.parse::<i32>() {
