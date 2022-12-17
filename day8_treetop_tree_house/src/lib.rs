@@ -2,8 +2,8 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 
-pub mod tree;
-
+pub mod parser;
+pub mod visible;
 
 pub fn read_lines_from_file<P>(filename: P) -> Vec<String>
 where

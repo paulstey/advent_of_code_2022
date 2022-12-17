@@ -1,17 +1,19 @@
-use treetop_tree_house::{self, parser};
+// src/main.rs
+
+use anyhow::Result;
 use time::Instant;
+use treetop_tree_house::{self, parser, visible};
 
-fn main() {
+fn main() -> Result<()> {
     let t1 = Instant::now();
-    let lines_string_vec = treetop_tree_house::read_lines_from_file("data/test_data.txt");
+    let lines_string_vec = treetop_tree_house::read_lines_from_file("data/data.txt");
 
-    let num_vec_vec = lines_string_vec
-        .iter()
-        .map(|line| parser::parse(&line))
-        .collect::<Vec<Vec<i32>>>();
- 
-    let arr = Array2::from_shape_vec((nrows, ncols), data)?; 
+    let mat = parser::lines_vec_to_array2(&lines_string_vec); 
+
+    let solution = visible::flag_visible_trees(&mat).sum();
 
     println!("{:?}", Instant::now() - t1);
-    println!("{:?}", solution); 
+    println!("{:?}", solution);
+
+    Ok(())
 }
