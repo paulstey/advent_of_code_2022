@@ -3,6 +3,7 @@ use std::io::{BufRead, BufReader};
 use std::path::Path;
 
 pub mod parser;
+pub mod scenic;
 pub mod visible;
 
 pub fn read_lines_from_file<P>(filename: P) -> Vec<String>
