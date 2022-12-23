@@ -1,7 +1,7 @@
 // src/main.rs
 
 use anyhow::Result;
-use rope_bridge::{self, parser, rope::Rope, motion::Motion};
+use rope_bridge::{self, motion::Motion, parser, rope::Rope};
 use time::Instant;
 
 fn main() -> Result<()> {
@@ -17,14 +17,12 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+fn compute_rope_path(motions: &[Motion]) -> u32 {
+    let mut rope: Rope<10> = Rope::new();
 
+    motions
+        .iter()
+        .for_each(|motion| rope.move_head_knot(motion));
 
-fn compute_rope_path(motions: &Vec<Motion>) -> u32 {
-    let mut rope: Rope<10> = Rope::new(); 
-
-    motions.iter().for_each(|motion| rope.move_head_knot(motion));
-
-    let n_unique_tail_positions = rope.path.len() as u32;
-    
-    n_unique_tail_positions
+    rope.path.len() as u32
 }

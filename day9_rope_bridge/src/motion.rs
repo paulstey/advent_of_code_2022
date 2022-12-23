@@ -9,7 +9,7 @@ pub enum Motion {
 }
 
 impl Motion {
-    pub fn new(line: &String) -> Self {
+    pub fn new(line: &str) -> Self {
         let line_split: Vec<&str> = line.split_whitespace().collect();
         let direction = line_split[0];
         let n_steps = line_split[1]

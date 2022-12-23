@@ -1,4 +1,7 @@
 // src/rope.rs
+//
+// NOTE: several chunks of this code were borrowed from `ericwburden` on GitHub, whose
+// entire Advent of Code repo is phenomenal (https://github.com/ericwburden/advent_of_code_2022)
 
 use crate::motion::Motion;
 use itertools::Itertools;
@@ -17,7 +20,7 @@ pub struct Knot(pub i32, pub i32);
 
 impl Knot {
     pub fn new() -> Knot {
-        Knot(0, 0) 
+        Knot(0, 0)
     }
 
     fn too_far(&self, other: &Knot) -> bool {
@@ -28,17 +31,6 @@ impl Knot {
     }
 }
 
-pub fn compute_rope_path(motions: &Vec<Motion>) -> u32 {
-    let mut rope: Rope<2> = Rope::new(); 
-
-    motions.iter().for_each(|motion| rope.move_head_knot(motion));
-
-    let n_unique_tail_positions = rope.path.len() as u32;
-    
-    n_unique_tail_positions
-}
-
-
 impl<const N: usize> Rope<N> {
     pub fn new() -> Self {
         let knots = [Knot::new(); N];
@@ -46,7 +38,6 @@ impl<const N: usize> Rope<N> {
 
         Self { knots, path }
     }
-
 
     fn follow(&mut self, leader: usize, follower: usize) {
         let Knot(head_x, head_y) = self.knots[leader];
